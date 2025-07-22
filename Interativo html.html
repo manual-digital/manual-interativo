@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Abordagem e Reversão de Clientes em Status de Abandono</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 0;
+        }
+
+        .topic {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .topic:last-child {
+            border-bottom: none;
+        }
+
+        .topic-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .topic-header:hover {
+            background: #e9ecef;
+            border-left-color: #6c757d;
+        }
+
+        .topic-header.active {
+            background: #e9ecef;
+            border-left-color: #495057;
+        }
+
+        .topic-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .topic-icon {
+            font-size: 1.2em;
+            color: #6c757d;
+            transition: transform 0.3s ease;
+        }
+
+        .topic-header.active .topic-icon {
+            transform: rotate(180deg);
+        }
+
+        .topic-content {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: white;
+        }
+
+        .topic-content.active {
+            padding: 30px;
+            max-height: none;
+        }
+
+        .topic-content h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+        }
+
+        .topic-content h4 {
+            color: #6c757d;
+            margin: 20px 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .topic-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .topic-content ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .topic-content li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .script-box {
+            background: #f1f3f4;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .objection-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .objection-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .response-text {
+            color: #495057;
+        }
+
+        .phase-box {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .phase-title {
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .message-example {
+            background: #f5f5f5;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #6c757d;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .topic-header {
+                padding: 15px 20px;
+            }
+            
+            .topic-content.active {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Manual de Abordagem e Reversão de Clientes em Status de Abandono</h1>
+            <p>Guia Completo para Equipe de Expansão da Proesc</p>
+        </div>
+
+        <div class="content">
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Introdução</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <h3>Objetivo do Manual</h3>
+                    <p>Este manual visa capacitar a equipe de Expansão da Proesc a reengajar escolas que se encontram em status de abandono, transformando a inadimplência de um obstáculo em uma oportunidade para fortalecer o relacionamento e apresentar soluções inovadoras. Nosso foco é uma abordagem consultiva, onde a regularização financeira é um passo fundamental para que a escola possa novamente usufruir plenamente dos benefícios da plataforma Proesc e de novas soluções que resolverão suas dores.</p>
+
+                    <h3>A Importância da Retomada Estratégica</h3>
+                    <p>Entendemos que o abandono pode ter diversas causas, incluindo desafios financeiros ou insatisfação com o atendimento anterior. Nossa missão é ir além da cobrança, posicionando a Proesc como uma parceira estratégica que oferece as ferramentas e o suporte necessário para o sucesso da escola. A retomada estratégica envolve não apenas a reativação da plataforma, mas a apresentação de um caminho claro para a resolução de problemas e o alcance de novos patamares de eficiência e qualidade educacional.</p>
+
+                    <h3>A Filosofia da Abordagem Proesc: Solução e Acompanhamento</h3>
+                    <p>Nossa abordagem com escolas em status de abandono deve ser pautada em dois pilares essenciais: solução e acompanhamento. Compreendemos que cada escola possui suas particularidades e desafios. Portanto, a comunicação deve ser sempre respeitosa, buscando entender a fundo as dores e necessidades do cliente.</p>
+                    <p>Ao mesmo tempo, é crucial reforçar o valor inegável que a plataforma Proesc e suas soluções oferecem. A conversa não deve ser sobre a dívida, mas sobre como a Proesc pode resolver os problemas da escola, otimizar processos e contribuir para o sucesso educacional. A regularização financeira é apresentada como a chave que destrava o acesso a essas soluções e ao nosso acompanhamento contínuo.</p>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Comunicação Consultiva e Empática</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>Manter um tom de voz tranquilo, educado e profissional é essencial. A clareza na comunicação evita mal-entendidos e demonstra transparência. Devemos deixar claro, de forma sutil e respeitosa, que a questão financeira é o único impedimento para que a escola continue a usufruir plenamente dos benefícios da Proesc e de novas propostas de valor.</p>
+
+                    <h3>Foco na Ajuda e no Futuro</h3>
+                    <p>Em vez de focar no passado ou na dívida em si, a conversa deve ser direcionada para as soluções que a Proesc oferece e para o futuro da parceria. A regularização é o caminho para que a escola possa acessar novamente uma ferramenta que trará inúmeros benefícios e para que possamos apresentar produtos que resolverão suas dores específicas.</p>
+                    <p>Nossa parceria é ideal para superar os desafios e alcançar novos patamares de eficiência e qualidade. Faremos o acompanhamento do começo ao fim dessa retomada estratégica.</p>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Percepção dos Contatos Feitos</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>Durante nossas tentativas de contato, identificamos dificuldades na localização dos responsáveis pelas escolas. Entre os contatos bem-sucedidos, observamos os seguintes cenários recorrentes:</p>
+                    <ul>
+                        <li>Escolas que migraram para outra plataforma, após o bloqueio de acesso ao Proesc</li>
+                        <li>Instituições vendidas ou com a sociedade desfeita, sem continuidade no contrato</li>
+                        <li>Escolas que alegam falta de necessidade ou desinteresse imediato na retomada</li>
+                    </ul>
+                    <p>Diante disso, percebemos que a abordagem atual, baseada unicamente em ações humanas, limita nossa capacidade de retomar relacionamentos de forma ágil e eficaz.</p>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Funil de Inadimplência e Processo Interno</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>Para otimizar a abordagem às escolas em status de abandono, propomos a criação de um funil de inadimplência, que permitirá segmentar as escolas de acordo com o seu status e personalizar a comunicação. Essa segmentação nos ajudará a direcionar os esforços de forma mais eficaz e a aumentar as chances de regularização e reativação mais rápida.</p>
+                    <p>O processo interno deve ser claro e bem definido para garantir uma passagem de bastão eficiente entre as equipes.</p>
+
+                    <h3>Estratégias de Contato e Perfil dos Clientes Alvo</h3>
+                    <p>Clientes segmentados por tempo de inadimplência:</p>
+                    <ul>
+                        <li><strong>Fase 1 – Início de Abandono:</strong> atraso de 7 a 30 dias</li>
+                        <li><strong>Fase 2 – Risco de Abandono:</strong> atraso de 31 a 180 dias</li>
+                        <li><strong>Fase 3 – Abandono Parcial:</strong> atraso de 181 a 365 dias</li>
+                        <li><strong>Fase 4 – Abandono Total:</strong> atraso superior a 1 ano</li>
+                    </ul>
+                    <p>Além das suas ações manuais de ligações, mensagens e e-mails, existem várias estratégias automatizadas que trabalham em paralelo para maximizar as chances de recuperação de clientes.</p>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Estratégias por Fase de Abandono</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <div class="phase-box">
+                        <div class="phase-title">Fase 1 – Início de Abandono (7 a 30 dias)</div>
+                        <p><strong>Objetivo:</strong> Descobrir o motivo do afastamento e oferecer ajuda imediata.</p>
+                        
+                        <div class="message-example">
+                            <h4>Mensagem 1 – D+7</h4>
+                            <p><strong>Assunto:</strong> Notamos uma pausa no uso do Proesc... está tudo bem por aí?</p>
+                            <p>Olá, [Nome da escola]!</p>
+                            <p>Percebemos que a plataforma Proesc não tem sido utilizada como de costume. Está tudo certo com a equipe?</p>
+                            <p>Nosso time está à disposição para qualquer dúvida, dificuldade técnica ou necessidade de apoio.</p>
+                            <p>Conte com a gente!</p>
+                            <p>💬 [Botão ou link: "Falar com Suporte"]</p>
+                        </div>
+
+                        <div class="message-example">
+                            <h4>Mensagem 2 – D+14</h4>
+                            <p><strong>Assunto:</strong> Sua escola está com acesso parcial ao Proesc?</p>
+                            <p>Olá, [Nome da escola], tudo bem?</p>
+                            <p>Verificamos que a escola segue com pouco acesso ao sistema. Isso pode ser sinal de alguma dificuldade, dúvida ou mudança de cenário.</p>
+                            <p>Podemos agendar um atendimento rápido para ajudar com o que for preciso?</p>
+                            <p>📅 [Botão: Agendar atendimento]</p>
+                        </div>
+                    </div>
+
+                    <div class="phase-box">
+                        <div class="phase-title">Fase 2 – Risco de Abandono (31 a 180 dias)</div>
+                        <p><strong>Objetivo:</strong> Retomar contato, oferecer soluções e prevenir cancelamento.</p>
+                        
+                        <div class="message-example">
+                            <h4>Mensagem 1 – D+40</h4>
+                            <p><strong>Assunto:</strong> Sua escola ainda precisa de suporte?</p>
+                            <p>Olá, [Nome da escola],</p>
+                            <p>Notamos que a plataforma está sem uso há algumas semanas. Estamos aqui para ouvir você e entender se há algo que possamos ajustar ou melhorar.</p>
+                            <p>Ainda faz sentido para a escola utilizar o Proesc?</p>
+                            <p>Queremos te ajudar a voltar com segurança e facilidade.</p>
+                            <p>🤝 Estamos prontos para conversar.</p>
+                        </div>
+
+                        <div class="message-example">
+                            <h4>Mensagem 2 – D+60</h4>
+                            <p><strong>Assunto:</strong> Não perca os dados da sua escola</p>
+                            <p>Olá, [Nome da escola],</p>
+                            <p>O tempo de inatividade pode comprometer o histórico da instituição e dificultar a retomada.</p>
+                            <p>Que tal agendarmos um contato para entender como podemos ajudar?</p>
+                            <p>Nossa equipe pode revisar juntos seus processos e apresentar soluções simples e rápidas.</p>
+                            <p>🔄 Clique aqui para reagendar seu atendimento.</p>
+                        </div>
+                    </div>
+
+                    <div class="phase-box">
+                        <div class="phase-title">Fase 3 – Abandono Parcial (181 a 365 dias)</div>
+                        <p><strong>Objetivo:</strong> Confirmar cenário atual e explorar chance de recuperação.</p>
+                        
+                        <div class="message-example">
+                            <h4>Mensagem 1</h4>
+                            <p><strong>Assunto:</strong> Sua escola ainda está ativa?</p>
+                            <p>Olá, [Nome da escola],</p>
+                            <p>Há algum tempo não temos registro de uso da plataforma. Entendemos que mudanças podem ter ocorrido.</p>
+                            <p>A escola ainda está ativa? A gestão escolar continua em operação?</p>
+                            <p>Se houver interesse, podemos fazer um diagnóstico gratuito para entender como retomar ou migrar suas informações.</p>
+                            <p>📞 Quer conversar?</p>
+                        </div>
+
+                        <div class="message-example">
+                            <h4>Mensagem 2</h4>
+                            <p><strong>Assunto:</strong> Podemos ajudar a reorganizar sua escola?</p>
+                            <p>Olá!</p>
+                            <p>Caso estejam passando por reestruturações, mudanças internas ou administrativas, o Proesc pode ser um parceiro nesse processo.</p>
+                            <p>Nosso time pode propor soluções práticas para quem está retornando ou precisando reorganizar a gestão.</p>
+                            <p>📲 Fale com um especialista.</p>
+                        </div>
+                    </div>
+
+                    <div class="phase-box">
+                        <div class="phase-title">Fase 4 – Abandono Total (acima de 1 ano)</div>
+                        <p><strong>Objetivo:</strong> Verificar existência da escola, entender se deseja reativar, ou encerrar ciclo.</p>
+                        
+                        <div class="message-example">
+                            <h4>Mensagem 1</h4>
+                            <p><strong>Assunto:</strong> Ainda podemos contar com você?</p>
+                            <p>Olá, [Nome da escola],</p>
+                            <p>Passou mais de 1 ano desde o último uso da plataforma, e gostaríamos de entender se ainda faz sentido manter o vínculo.</p>
+                            <p>A escola segue em funcionamento? Há interesse em retornar ou reativar o sistema?</p>
+                            <p>Podemos encerrar o cadastro, ou oferecer condições especiais para um novo começo.</p>
+                            <p>✅ [Botão: Desejo Retornar]</p>
+                            <p>❌ [Botão: Encerrar Contato]</p>
+                        </div>
+
+                        <div class="message-example">
+                            <h4>Mensagem 2</h4>
+                            <p><strong>Assunto:</strong> Último contato – plataforma inativa</p>
+                            <p>Olá,</p>
+                            <p>Este é nosso último contato antes de encerrar o acompanhamento. Caso a escola esteja em funcionamento e deseje voltar a utilizar o Proesc, estamos prontos para reativar seu acesso com apoio completo.</p>
+                            <p>Caso contrário, respeitaremos sua decisão e agradecemos por ter feito parte da nossa rede.</p>
+                            <p>Até breve,<br>Equipe Proesc</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Sequência de Tentativas de Contato Manual</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <h3>Estratégia de Reversão de Abandono</h3>
+                    <p>Abaixo está o passo a passo das tentativas de contato manual com as escolas, organizadas por etapa, tipo de ação e modelo de comunicação a ser utilizado:</p>
+
+                    <div class="highlight-box">
+                        <h4>1ª Tentativa de Contato</h4>
+                        <ul>
+                            <li><strong>Ação:</strong> Ligação telefônica</li>
+                            <li><strong>Template:</strong> "Escolas em Abandono"</li>
+                            <li><strong>Orientação:</strong> Realize a ligação e, independentemente do resultado, envie em seguida o template "Escolas em Abandono" por WhatsApp ou e-mail. O objetivo é reforçar a importância do contato e demonstrar preocupação genuína com a situação da escola.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>2ª Tentativa de Contato (sem sucesso)</h4>
+                        <ul>
+                            <li><strong>Ação:</strong> Nova ligação telefônica</li>
+                            <li><strong>Template:</strong> "Tp podemos falar 49 a"</li>
+                            <li><strong>Orientação:</strong> Em caso de ausência de retorno, tente novamente o contato telefônico e envie o template "Tp podemos falar 49 a". Essa abordagem visa criar senso de urgência e facilitar o agendamento de uma conversa rápida com o responsável.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>3ª Tentativa de Contato (sem sucesso)</h4>
+                        <ul>
+                            <li><strong>Ação:</strong> Ligação telefônica + mensagem curta</li>
+                            <li><strong>Template:</strong> "Seguir com o atendimento"</li>
+                            <li><strong>Orientação:</strong> Nesta etapa, mantenha o canal de comunicação direto e informal. Não envie e-mails. Use o template "Seguir com o atendimento" via WhatsApp ou SMS para manter proximidade e facilitar o retorno.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>4ª Tentativa de Contato (sem sucesso)</h4>
+                        <ul>
+                            <li><strong>Ação:</strong> E-mail formal solicitando retorno</li>
+                            <li><strong>Template:</strong> E-mail de contato urgente</li>
+                            <li><strong>Orientação:</strong> Caso as tentativas anteriores não tenham sucesso, envie um e-mail formal solicitando retorno urgente. Reforce a importância do contato, os impactos da ausência de resposta e demonstre disponibilidade para apoio imediato.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Status do Inadimplente na Visão 360</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <div class="highlight-box">
+                        <h3>Inadimplente Frio</h3>
+                        <p><strong>Visão 360:</strong> Nesse status deixaremos os clientes com dívidas mais antigas, que não respondem a contatos iniciais ou que demonstraram pouco engajamento com a plataforma. Não há interesse em retornar ao uso do sistema Proesc e nem abertura para falar com o financeiro sobre o valor em aberto.</p>
+                        <p><strong>Playbook - Reversão de abandono:</strong> Dentro desse playbook, preencha a atividade "CATEGORIA - Cliente sem interesse no retorno" com as informações do que foi falado no contato com a escola. Obs. Inclua o máximo de informações coletadas.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Inadimplente Morno</h3>
+                        <p><strong>Visão 360:</strong> Nesse status deixaremos clientes que demonstraram algum tipo de engajamento, mas ainda não conseguem negociar no momento. Há um potencial maior de recuperação.</p>
+                        <p><strong>Playbook - Reversão de abandono:</strong> Dentro desse playbook, preencha a atividade "informe aqui resumo da conversa e oportunidades de negociação". Nessa atividade, deverá incluir os registros das escolas que responderam a alguma tentativa de contato, demonstrou interesse em regularizar ou em reativar o uso da plataforma, mas sem possibilidade de negociação imediata. A abordagem deve ser mais direta com questionamentos, como por exemplo "Em quanto tempo você acha que consegue resolver essa questão financeira?" ou "Qual a sua previsão de pagamento dos boletos para que eu solicite o contato do financeiro?". Se possível deixar uma data agendada para retorno.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Inadimplente Quente</h3>
+                        <p><strong>Visão 360:</strong> Nesse status deixaremos clientes que estão próximos de regularizar a dívida, que já demonstraram forte interesse de negociação.</p>
+                        <p><strong>Playbook - Reversão de abandono:</strong> Dentro desse playbook, preencha a atividade "CATEGORIA - Cliente resgatado". Nessa atividade, deverá incluir as escolas que demonstraram intenção clara de regularizar em breve e aceitou falar com o financeiro para negociação. O acompanhamento será mais próximo até finalizar o processo da reativação da plataforma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">O Papel da Equipe de Reversão de Abandonos</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <ol>
+                        <li>Inicialmente, o papel da equipe de reversão de abandono será entender as dificuldades que a escola está enfrentando e direcioná-la para negociar com o financeiro. Após o retorno da escola para a Proesc (ou seja, após a regularização financeira), o(a) CS irá propor uma demonstração do produto que irá resolver as dores da escola e agenda a reunião com a equipe de expansão.</li>
+                        
+                        <li><strong>Identificação do Interesse:</strong> Se a escola demonstrar interesse em negociar a dívida e aceitar o contato com o setor financeiro, a equipe de reversão de abandono deve classificá-la como Inadimplente Quente na Visão 360. Além disso, é fundamental registrar no playbook um resumo completo do que foi tratado, seja por ligação, WhatsApp ou e-mail, garantindo o histórico atualizado e o alinhamento entre as equipes.</li>
+                        
+                        <li><strong>CATEGORIA Resgatado:</strong> Através dessa atividade dentro do playbook reversão de abandonos, a equipe de reversão de abandono passa o bastão para o time Financeiro, registrando todas as informações relevantes do contato e criando um playbook de retorno ao CS. O Financeiro recebe a escola e a trata com prioridade.</li>
+                        
+                        <li><strong>Negociação e Pagamento:</strong> O time Financeiro recebe a passagem de bastão, negocia com a escola, acompanha a baixa do pagamento e desbloqueia a plataforma para que a escola volte a ter 100% de acesso às funcionalidades.</li>
+                        
+                        <li><strong>Retorno ao CS:</strong> Após a mudança de status inadimplente em fase de abandono para adimplente, a equipe de Sucesso do Cliente assume o acompanhamento inicial, garantindo que a escola esteja utilizando a plataforma com segurança e se sentindo acolhida. O(a) CS responsável já terá identificado a principal dor da instituição e oferecerá uma demonstração do produto que irá atender a sua dor.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Bloqueio da Plataforma e Módulo de Retomada Estratégica</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>É essencial que a equipe de reversão de abandono compreenda os impactos gerados pelo atraso no pagamento. Há a possibilidade de que a escola esteja utilizando outra plataforma, sem acesso aos benefícios exclusivos oferecidos pela Proesc. Diante disso, uma retomada estratégica conduzida com cuidado e atenção aos detalhes pode ser decisiva para uma negociação bem-sucedida e para o fortalecimento da instituição após a regularização dos débitos. O acompanhamento contínuo, aliado à identificação de oportunidades e à implementação de soluções, será fundamental para garantir resultados positivos.</p>
+
+                    <div class="highlight-box">
+                        <ul>
+                            <li><strong>Bloqueio parcial:</strong> ocorre com 7 dias após o vencimento do boleto. A escola consegue realizar apenas consultas.</li>
+                            <li><strong>Bloqueio total:</strong> ocorre com 90 dias após o vencimento do boleto: a escola é impedida de realizar qualquer acesso ou funcionalidade.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Gatilhos Mentais para a Abordagem Consultiva</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>Os gatilhos mentais são ferramentas poderosas na comunicação persuasiva. Quando utilizados de forma ética e estratégica, podem influenciar a decisão da escola de regularizar sua situação financeira e retomar a parceria com a Proesc, percebendo a Proesc como uma solucionadora de problemas. Abaixo, apresentamos alguns gatilhos mentais e como aplicá-los:</p>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Reciprocidade</h3>
+                        <p><strong>Conceito:</strong> As pessoas tendem a retribuir favores e gentilezas. Ao oferecer algo de valor (solução para uma dor, acompanhamento) antes de pedir a regularização, aumentamos a probabilidade de a escola se sentir compelida a retribuir.</p>
+                        <p><strong>Aplicação:</strong> Ofereça uma solução imediata (mesmo que teórica): Exemplo:</p>
+                        <div class="script-box">
+                            "Entendo que a gestão de matrículas pode ser um desafio, e a Proesc tem funcionalidades que simplificam muito isso. Eu gostaria de te mostrar como assim que pudermos reativar seu acesso. Primeiro você precisa resolver essa trava que temos junto ao financeiro. Você já consegue falar com eles hoje?"
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Autoridade</h3>
+                        <p><strong>Conceito:</strong> As pessoas tendem a seguir a orientação de especialistas ou figuras de autoridade.</p>
+                        <p><strong>Aplicação:</strong> Posicione a Proesc como especialista: Reforce que a Proesc é líder no mercado de gestão educacional e que possui a expertise e as ferramentas para auxiliar a escola a alcançar seus objetivos. Mencione o time especialista de Expansão: Destaque que a reunião com o time especialista de Expansão é uma oportunidade única de ter acesso a um conhecimento aprofundado sobre como otimizar o uso da plataforma e resolver as dores específicas da escola com os produtos certos.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Escassez</h3>
+                        <p><strong>Conceito:</strong> A percepção de que algo é limitado ou pode acabar gera um senso de urgência.</p>
+                        <p><strong>Aplicação:</strong> Oportunidade de Reunião:</p>
+                        <div class="script-box">
+                            "Nossa agenda com os especialistas é bastante concorrida, mas quero garantir que você tenha essa oportunidade de ouro para resolver suas dores. Que tal agendarmos o quanto antes?"
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Prova Social</h3>
+                        <p><strong>Conceito:</strong> As pessoas tendem a seguir o que outras pessoas estão fazendo, especialmente se forem semelhantes a elas.</p>
+                        <p><strong>Aplicação:</strong> Casos de sucesso (de forma genérica e ética):</p>
+                        <div class="script-box">
+                            "Temos visto muitas escolas que estavam em situação similar à sua conseguirem se reerguer e prosperarem com a Proesc após a retomada. Queremos que a sua escola seja a próxima história de sucesso."
+                        </div>
+                        <p>Reforce que a escola faz parte de uma comunidade de instituições de ensino que confiam na Proesc para sua gestão e que estão colhendo os frutos dessa parceria.</p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Coerência e Compromisso</h3>
+                        <p><strong>Conceito:</strong> As pessoas tendem a agir de forma consistente com seus compromissos anteriores ou com o que elas acreditam.</p>
+                        <p><strong>Aplicação:</strong> Lembre o compromisso inicial: Recorde a escola do motivo pelo qual ela escolheu a Proesc inicialmente e dos benefícios que buscava.</p>
+                        <div class="script-box">
+                            "Lembro que quando vocês vieram para a Proesc, buscavam facilitar para os pais o recebimento mensal e conseguimos automatizar o processo. Queremos ajudá-los a resolver a dor da escola novamente. Podemos agendar uma breve conversa para entender melhor sua situação?"
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Gatilho da Dor vs. Prazer</h3>
+                        <p><strong>Conceito:</strong> As pessoas são motivadas a evitar a dor e a buscar o prazer.</p>
+                        <p><strong>Aplicação:</strong></p>
+                        <ul>
+                            <li><strong>Dor de não ter a Proesc:</strong> Sutilmente, lembre a escola dos problemas que ela pode estar enfrentando sem a Proesc ou com a plataforma bloqueada.</li>
+                            <li><strong>Prazer de ter a Proesc:</strong> "Sem a Proesc, a gestão de notas pode se tornar um processo manual e demorado, e sei que isso gera uma dor grande para a sua equipe." Enfatize os benefícios e a facilidade que a Proesc trará de volta, e as novas soluções que resolverão as dores (ex: "Com a Proesc reativada e as novas soluções, você terá novamente a tranquilidade de uma gestão escolar eficiente e moderna, resolvendo de vez o problema da escola.")</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Scripts de Reversão</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>Este script foi desenvolvido para que a equipe de reversão de abandonos consiga reverter a intenção do cliente, convencendo-o a aceitar falar com o departamento financeiro da Proesc. Ele incorpora os gatilhos mentais e as informações sobre o bloqueio da plataforma e o módulo de retomada estratégica.</p>
+
+                    <div class="script-box">
+                        <h3>Cenário: Cliente com Bloqueio Parcial</h3>
+                        <p><strong>Seu Papel:</strong> Entender as dificuldades da escola e posicionar a conversa com o financeiro como o primeiro passo para resolver essas dificuldades e desbloquear o acesso total à plataforma.</p>
+                        
+                        <h4>Abordagem Sugerida:</h4>
+                        <p>"Bom dia/tarde, [Nome do Contato]. Meu nome é [Seu Nome] e falo da Proesc. Tudo bem por aí?</p>
+                        <p>[Aguarde a resposta e demonstre escuta ativa. Se o cliente mencionar algum desafio, valide a dor dele.]</p>
+                        <p>O meu contato hoje é porque notamos que o uso da plataforma Proesc foi parcialmente bloqueado devido a um atraso de pagamento. Como o nosso maior interesse é que a escola continue colhendo os frutos de uma gestão educacional eficiente, colocamos sua escola em um programa exclusivo e quero entender qual a realidade que vocês vivem hoje.</p>
+                        <p>Obs. Após resposta do cliente, questione.. procure entender quais são as dores do cliente.</p>
+                        
+                        <h4>Próximo passo:</h4>
+                        <p>Para que possamos resolver essa situação o mais rápido possível e vocês voltem a ter acesso completo a todas as funcionalidades da Proesc, é fundamental que conversem com nossa equipe financeira. Eles estão preparados para entender sua situação e encontrar a melhor solução para vocês. Consegue falar com eles ainda hoje?</p>
+                        
+                        <h4>Em caso de resposta positiva:</h4>
+                        <p>Quero te adiantar algo muito importante: assim que essa questão financeira for resolvida, nos falamos novamente. Vou te apresentar a solução para resolver esse problema. Em seguida finalize o contato.</p>
+                        
+                        <h4>Quando o pagamento for realizado e o acesso reativado:</h4>
+                        <p>Entre em contato com a escola novamente, tente agendar a reunião com a equipe de expansão para que apresentem o produto que irá resolver a dor da escola. Caso haja resistência, informe que aceitando, terá um benefício exclusivo, porém apenas nossos especialistas irão propor no dia da reunião. Se você for questionado(a), informe não ter acesso ao benefício, que poderá ser um desconto no produto ou mensalidade para uso da plataforma ou outra coisa. Reforce que a escola está inscrita em um programa de retomada estratégica especial, diga que tem certeza que não irá se arrepender e peça um voto de confiança.</p>
+                        
+                        <h4>Aceitando a proposta de reunião:</h4>
+                        <p>Ao agendar a reunião com a equipe de expansão, os deixem cientes que trata-se de um cliente que estava em fase de abandono.</p>
+                    </div>
+
+                    <div class="script-box">
+                        <h3>Cenário: Cliente com Bloqueio Total</h3>
+                        <p><strong>Seu Papel:</strong> Reconhecer a gravidade do bloqueio total, mas focar na solução e na oportunidade de reativar a parceria com a Proesc.</p>
+                        
+                        <h4>Abordagem Sugerida:</h4>
+                        <p>"Bom dia/tarde, [Nome do Contato]. Meu nome é [Seu Nome] e falo da Proesc. Tudo bem por aí?</p>
+                        <p>[Aguarde a resposta e demonstre escuta ativa. Se o cliente mencionar algum desafio, valide a dor dele.]</p>
+                        <p>Estou entrando em contato hoje porque identificamos que o acesso à plataforma Proesc está totalmente bloqueado. Ao analisar alguns dados da escola, percebi que isso pode ter relação com um atraso no pagamento. Você pode por favor me informar como a escola tem se posicionado em relação a essa situação?</p>
+                        
+                        <h4>Caso não queira falar, demonstre alguma resistência, utilize uma das frases abaixo:</h4>
+                        <p>Sei o quanto isso pode ser frustrante, pois impede completamente o uso da plataforma e o acesso a todas as suas funcionalidades. Nosso maior interesse é que vocês voltem a ter uma gestão educacional eficiente e resolvam suas dores com nossas soluções.</p>
+                        <p>Para que possamos reverter essa situação e vocês voltem a ter acesso completo a tudo que a Proesc oferece, é imprescindível que conversem com nossa equipe financeira. Eles estão prontos para analisar a melhor forma de regularizar essa situação e permitir que vocês retomem o controle da gestão escolar.</p>
+                        <p>Entendo, mas tenho uma excelente notícia, assim que essa questão financeira for resolvida, e a plataforma for reativada, eu entro em contato com você novamente para te oferecer um benefício exclusivo, que vai te ajudar a sanar de vez esse problema que tem enfrentado até aqui.</p>
+                        <p>Você topa falar com o financeiro para verificar quais as opções de pagamento?</p>
+                        <p>O nosso interesse é ajudar a sua escola a se reorganizar financeiramente e a redescobrir o potencial da Proesc, com todas as nossas novas funcionalidades e soluções que podem resolver as dificuldades que você está enfrentando.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Lidando com Objeções Comuns</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <div class="objection-box">
+                        <div class="objection-title">Objeção: 'Não tenho dinheiro agora.'</div>
+                        <div class="response-text">
+                            <strong>Resposta:</strong> "Compreendo perfeitamente, [Nome do Contato]. Por isso, nossa equipe financeira está preparada para analisar as melhores condições de negociação para a [Nome da Escola]. Nosso objetivo é encontrar uma solução que se encaixe na sua realidade, para que vocês não percam os benefícios da Proesc e, principalmente, para que eu possa te apresentar as soluções que resolverão as dores da sua escola. Podemos conectar você com eles para que apresentem as opções? Assim que resolvermos essa parte, e a plataforma for reativada, um de nossos especialistas, entrará em contato para te oferecer um benefício exclusivo. Estamos aqui para te acompanhar do começo ao fim nessa retomada estratégica."
+                        </div>
+                    </div>
+
+                    <div class="objection-box">
+                        <div class="objection-title">Objeção: 'Não estamos usando a plataforma.'</div>
+                        <div class="response-text">
+                            <strong>Resposta:</strong> "Exatamente por isso que estamos entrando em contato! Sabemos que a plataforma não está sendo utilizada, e queremos reverter essa situação. A Proesc evoluiu muito e tenho certeza que as novas funcionalidades e produtos podem resolver problemas que talvez vocês estejam enfrentando hoje. A regularização é o primeiro passo para que possamos reativar o acesso à plataforma e resolver suas dores com nossas soluções. Após a reativação, eu entro em contato com você novamente para agendarmos uma apresentação rápida do produto 'x'."
+                        </div>
+                    </div>
+
+                    <div class="objection-box">
+                        <div class="objection-title">Objeção: 'Não vejo valor na Proesc.'</div>
+                        <div class="response-text">
+                            <strong>Resposta:</strong> "Entendo seu ponto, [Nome do Contato]. E é justamente por isso que uma conversa com o nosso time financeiro se torna tão relevante. Eles são especialistas e vão encontrar uma solução para você. Você resolve primeiro essa parte com eles e após a reativação, agendamos uma breve demonstração para que veja como a Proesc com suas funcionalidades atualizadas e novos produtos pode ser a solução ideal. Que tal falar com o financeiro agora?"
+                        </div>
+                    </div>
+
+                    <div class="objection-box">
+                        <div class="objection-title">Objeção: 'Tive problemas com o atendimento anterior.'</div>
+                        <div class="response-text">
+                            <strong>Resposta:</strong> "Lamento muito que isso tenha acontecido, [Nome do Contato]. A Proesc está em constante aprimoramento, e o seu feedback é muito importante para nós. Quero que saiba que estamos aqui para trazer a solução e te acompanhar do começo ao fim nessa retomada estratégica. Nosso compromisso é garantir que você tenha a melhor experiência e que todos os seus problemas sejam resolvidos. Que tal agendarmos uma conversa para te mostrar como podemos reverter essa situação e te apresentar as novidades que temos para a sua escola? Após a regularização e reativação, agendo com você um bate-papo com um de nossos especialistas."
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic">
+                <div class="topic-header" onclick="toggleTopic(this)">
+                    <span class="topic-title">Destaque: Treinamentos Proesc</span>
+                    <span class="topic-icon">▼</span>
+                </div>
+                <div class="topic-content">
+                    <p>A plataforma Proesc oferece um programa completo de capacitação que inclui:</p>
+                    <ul>
+                        <li><strong>Treinamentos Gravados:</strong> Acesso 24h a conteúdos de capacitação</li>
+                        <li><strong>Treinamentos Ao Vivo:</strong> Sessões interativas com especialistas</li>
+                        <li><strong>Ambientes Especializados</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Manual de Abordagem e Reversão de Clientes em Status de Abandono - Proesc</p>
+            <p>Versão Interativa - Desenvolvido para facilitar o acesso às informações</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleTopic(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.topic-icon');
+            
+            // Close all other topics
+            const allHeaders = document.querySelectorAll('.topic-header');
+            const allContents = document.querySelectorAll('.topic-content');
+            
+            allHeaders.forEach(h => {
+                if (h !== header) {
+                    h.classList.remove('active');
+                    h.querySelector('.topic-icon').textContent = '▼';
+                }
+            });
+            
+            allContents.forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('active');
+                }
+            });
+            
+            // Toggle current topic
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+            
+            if (header.classList.contains('active')) {
+                icon.textContent = '▲';
+            } else {
+                icon.textContent = '▼';
+            }
+        }
+
+        // Add smooth scrolling for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            const topics = document.querySelectorAll('.topic-header');
+            topics.forEach(topic => {
+                topic.addEventListener('click', function() {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
